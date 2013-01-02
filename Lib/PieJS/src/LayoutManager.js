@@ -15,18 +15,18 @@ Pie.LayoutManager = Pie.Object.extend({
 			return;
 		}
 
-		$.get('/App/View/Layouts/' + layout + '.html').success(function(resp) {
+		$.get('/views/layouts/' + layout + '.html').success(function(resp) {
 			// We have the view
 			self.compileLayout(resp, layout, target);
 		}).error(function() {
-			// We don't have the view so load the PieJS version
-			$.get('/Lib/PieJS/src/View/Layouts/' + layout + '.html').success(function(resp) {
-				// We have the view
-				self.compileLayout(resp, layout, target);
-			}).error(function() {
-				// We don't have the view something went horribly wrong
-				console.log("Couldn't find view");
-			});
+			// We don't have the view something went horribly wrong
+			console.log("Couldn't find view");
+
+			if (layout !== 'missing-view') {
+				// load the missing view warning unless we failed loading the
+				// missing view warning
+				self.loadLayout('missing-view', target);
+			}
 		});
 	},
 

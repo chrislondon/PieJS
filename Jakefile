@@ -1,18 +1,25 @@
 var fs = require('fs');
 
-desc('Make sure we have the correct build folder');
-directory('./build', [], function() {
-	console.log('Creating build directory');
-});
+var minify = function(source, destination) {
+	console.log('Building ' + destination + '...');
+	var data = fs.readFileSync(source),
+		jsmin = require('jsmin').jsmin;
 
-desc('Create unminified pie.js');
-file('build/pie.js', ['./build'], function() {
+	fs.writeFileSync(destination, jsmin(data.toString()));
+	console.log('done');
+};
+
+var concat = function(folder, destination, require) {
+	if (require === undefined) {
+		require = true;
+	}
+
 	var list, i, loaded = {}, data = '';
 
-	console.log('Building pie.js...');
+	console.log('Building ' + destination + '...');
 
 	list = new jake.FileList();
-	list.include('Lib/PieJS/src/*.js');
+	list.include(folder);
 	list = list.toArray();
 
 
@@ -25,18 +32,20 @@ file('build/pie.js', ['./build'], function() {
 
 		fileData = '' + fs.readFileSync(filename);
 
-		// find requires
-		requires = fileData.match(pattern);
+		if (require) {
+			// find requires
+			requires = fileData.match(pattern);
 
-		if (requires !== null) {
-			for (i in requires) {
-				if (requires.hasOwnProperty(i)) {
-					loadFile(requires[i].substr(9, requires[i].length - 12));
+			if (requires !== null) {
+				for (i in requires) {
+					if (requires.hasOwnProperty(i)) {
+						loadFile(requires[i].substr(9, requires[i].length - 12));
+					}
 				}
 			}
-		}
 
-		fileData = fileData.replace(pattern, '');
+			fileData = fileData.replace(pattern, '');
+		}
 
 		console.log('Loading file ' + filename);
 		loaded[filename] = true;
@@ -49,59 +58,132 @@ file('build/pie.js', ['./build'], function() {
 		}
 	}
 
-	fs.writeFileSync('build/pie.js', data);
+	fs.writeFileSync(destination, data);
 	console.log('done');
+};
+
+var deleteFolderRecursive = function(path) {
+    var files = [];
+    if( fs.existsSync(path) ) {
+        files = fs.readdirSync(path);
+        files.forEach(function(file,index){
+            var curPath = path + "/" + file;
+            if(fs.statSync(curPath).isDirectory()) { // recurse
+                deleteFolderRecursive(curPath);
+            } else { // delete file
+                fs.unlinkSync(curPath);
+            }
+        });
+        fs.rmdirSync(path);
+    }
+};
+
+desc('Make sure we have the correct build folder');
+directory('./webroot/js', [], function() {
+	console.log('Creating build directory');
+});
+
+desc('Make sure we have the correct view folder');
+directory('./webroot/views', [], function() {
+	console.log('Creating view directory');
+});
+
+task('build-views', ['./webroot/views'], function() {
+	var list, i, filename, filedir, targetDir, loaded = {};
+
+	list = new jake.FileList();
+	list.include('App/View/**/*.html');
+	list.include('Lib/PieJS/src/View/**/*.html');
+	list = list.toArray();
+
+	for (i in list) {
+		if (list.hasOwnProperty(i)) {
+			filename = (list[i].substr(0, 3) === 'App' ? list[i].substr(9) : list[i].substr(19)).toLowerCase();
+
+			if (loaded[filename] !== undefined) {
+				continue;
+			}
+
+			loaded[filename] = true;
+			
+			filedir = filename.split('/');
+			filename = filedir.pop();
+			filedir.join('/');
+
+			targetDir = './webroot/views/' + filedir;
+			
+			jake.mkdirP(targetDir);
+			
+			fs.writeFileSync(targetDir + '/' + filename, fs.readFileSync(list[i]));
+
+			// copy file over
+			console.log(filename);
+		}
+	}
+});
+
+desc('Create unminified pie.js');
+file('./webroot/js/pie.js', ['./webroot/js'], function() {
+	concat('Lib/PieJS/src/*.js', './webroot/js/pie.js');
 });
 
 desc ('This is the minify task');
-file('build/pie.min.js', ['build/pie.js'], function() {
-	console.log('Building pie.min.js...');
-	var data = fs.readFileSync('build/pie.js'),
-		jsmin = require('jsmin').jsmin;
+file('./webroot/js/pie.min.js', ['./webroot/js/pie.js'], function() {
+	minify('./webroot/js/pie.js', './webroot/js/pie.min.js');
+});
 
-	fs.writeFileSync('build/pie.min.js', jsmin(data.toString()));
-	console.log('done');
+desc ('Make sure we have handlebars');
+file('./webroot/js/handlebars.js', ['./webroot/js'], function() {
+	concat('Lib/Handlebars/*.js', './webroot/js/handlebars.js', false);
+});
+
+desc ('Minify handlebars');
+file('./webroot/js/handlebars.min.js', ['./webroot/js/handlebars.js'], function() {
+	minify('./webroot/js/handlebars.js', './webroot/js/handlebars.min.js');
 });
 
 desc('Create unminified app.js');
-file('build/app.js', ['./build'], function() {
-	console.log('Building app.js...');
-	var data = '';
-
-	data += fs.readFileSync('App/App.js');
-	data += fs.readFileSync('App/Config/Routes.js');
-	data += fs.readFileSync('App/Controller/Users.js');
-
-	fs.writeFileSync('build/app.js', data);
-	console.log('done');
+file('./webroot/js/app.js', ['./webroot/js'], function() {
+	concat(['App/*.js', 'App/**/*.js'], './webroot/js/app.js');
 });
 
 desc ('This is the minify task');
-file('build/app.min.js', ['build/app.js'], function() {
-	console.log('Building app.min.js...');
-	var data = fs.readFileSync('build/app.js'),
-		jsmin = require('jsmin').jsmin;
-
-	fs.writeFileSync('build/app.min.js', jsmin(data.toString()));
-	console.log('done');
+file('./webroot/js/app.min.js', ['./webroot/js/app.js'], function() {
+	minify('./webroot/js/app.js', './webroot/js/app.min.js');
 });
 
 desc ('Remove all build files');
 task('clean', [], function() {
 	console.log('Removing previous build...');
 
-	fs.unlinkSync('build/pie.js');
-	fs.unlinkSync('build/pie.min.js');
-	fs.unlinkSync('build/app.js');
-	fs.unlinkSync('build/app.min.js');
+	var i, filesList = [
+		'./webroot/js/pie.js',
+		'./webroot/js/pie.min.js',
+		'./webroot/js/app.js',
+		'./webroot/js/app.min.js',
+		'./webroot/js/handlebars.js',
+		'./webroot/js/handlebars.min.js'
+	];
 
+	for (i in filesList) {
+		if (filesList.hasOwnProperty(i)) {
+			try {
+				fs.unlinkSync(filesList[i]);
+			} catch(e) {
+				console.log(filesList[i] + ' missing');
+			}
+		}
+	}
+
+	deleteFolderRecursive('./webroot/views');
+	
 	console.log('done');
 });
 
 desc('Main build task');
-task('build', ['build/pie.min.js', 'build/app.min.js'], function() {
+task('build', ['./webroot/js/pie.min.js', './webroot/js/app.min.js', 'build-views', './webroot/js/handlebars.min.js'], function() {
 	console.log('Build complete');
 });
-task('rebuild', ['clean', 'build/pie.min.js', 'build/app.min.js'], function() {
+task('rebuild', ['clean', 'build'], function() {
 	console.log('Rebuild complete');
 });
