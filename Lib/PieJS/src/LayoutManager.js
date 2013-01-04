@@ -7,17 +7,17 @@ Pie.LayoutManager = Pie.Object.extend({
 		this.loadLayout('default');
 	},
 
-	loadLayout: function(layout, target) {
+	loadLayout: function(layout, target, context) {
 		var self = this;
 
 		if (this.layouts[layout] !== undefined) {
-			this.renderLayout(layout, target);
+			this.renderLayout(layout, target, context);
 			return;
 		}
 
 		$.get('/views/layouts/' + layout + '.html').success(function(resp) {
 			// We have the view
-			self.compileLayout(resp, layout, target);
+			self.compileLayout(resp, layout, target, context);
 		}).error(function() {
 			// We don't have the view something went horribly wrong
 			console.log("Couldn't find view");
@@ -25,17 +25,17 @@ Pie.LayoutManager = Pie.Object.extend({
 			if (layout !== 'missing-view') {
 				// load the missing view warning unless we failed loading the
 				// missing view warning
-				self.loadLayout('missing-view', target);
+				self.loadLayout('missing-view', target, context);
 			}
 		});
 	},
 
-	compileLayout: function(html, layout, target) {
+	compileLayout: function(html, layout, target, context) {
 		this.set('layouts.' + layout, Handlebars.compile(html));
-		this.renderLayout(layout, target);
+		this.renderLayout(layout, target, context);
 	},
 
-	renderLayout: function(layout, target) {
-		$('body').append(this.layouts[layout]());
+	renderLayout: function(layout, target, context) {
+		$('body').append(this.layouts[layout](context));
 	}
 });
