@@ -1,1 +1,3 @@
-var App = Pie.Application.extend();
+var App = Pie.Application.extend({
+	
+});
