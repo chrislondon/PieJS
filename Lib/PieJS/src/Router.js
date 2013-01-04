@@ -1,6 +1,7 @@
 require('Lib/PieJS/src/Object.js');
 
 var Pie = Pie || {};
+var App = App || {};
 
 Pie.Router = Pie.Object.extend({
 	lastRoute: null,
@@ -61,15 +62,21 @@ Pie.Router = Pie.Object.extend({
 			// If no config routes try and parse url
 			route = Pie.Route.create(url);
 		}
-
-		console.log("ROUTING TO ", route);
-
-		/*if (App.Controller[route.controller][route.action] !== undefined) {
+		
+		if (App.Controller[route.get('controller')][route.get('action')] !== undefined) {
 			// WE FOUND A ROUTE
+
+			var context = App.Controller[route.get('controller')][route.get('action')]();
+
+			$.get('/views/' + route.get('controller').toLowerCase() + '/' + route.get('action').toLowerCase() + '.html').success(function(html) {
+				// We have the view
+				$('#PieContent-default').html(Handlebars.compile(html)(context));
+			})
+
 		} else {
 			// No route. 404
 
-		}*/
+		}
 
 		this.lastRoute = url;
 	},
