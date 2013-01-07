@@ -1,0 +1,14 @@
+{{test "didSuccess"}}
+
+
+{{#if didSuccess}}
+	Successfully Loaded!
+{{/if}}
+
+{{#if didError}}
+	Sorry there was an error: {{error.text}}
+{{/if}}
+
+{{#unless didLoad}}
+	Loading...
+{{/unless}}

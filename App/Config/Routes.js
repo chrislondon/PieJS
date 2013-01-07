@@ -12,5 +12,5 @@
  *
  */
 App.Config.Routes = [
-	
+	{url: '/', controller: 'Passoffs'}
 ];

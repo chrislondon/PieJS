@@ -40,7 +40,7 @@ Pie.Router = Pie.Object.extend({
 	},
 
 	route: function(url) {
-		var i, route = false, appRoutes;
+		var i, route = false, controller;
 
 		if (url === undefined) {
 			url = this.getUrl();
@@ -62,20 +62,36 @@ Pie.Router = Pie.Object.extend({
 			// If no config routes try and parse url
 			route = Pie.Route.create(url);
 		}
+
+		controller = App.get('Controller.' + route.get('controller').decapitalize());
+
+		if (controller === undefined) {
+			// We haven't created this controller yet. Let's try and create it
+			if (App.get('Controller.' + route.get('controller')) === undefined) {
+				// We don't have this controller at all
+				console.log("Missing Controller");
+				//this.route('/errors/404');
+				return;
+			}
+
+			controller = App.Controller[route.get('controller').decapitalize()] = App.get('Controller.' + route.get('controller')).create();
+		}
 		
-		if (App.Controller[route.get('controller')][route.get('action')] !== undefined) {
+		if (controller.get(route.get('action')) !== undefined) {
 			// WE FOUND A ROUTE
 
-			var context = App.Controller[route.get('controller')][route.get('action')]();
+			var context = controller[route.get('action')].apply(controller, route.get('args'));
 
 			$.get('/views/' + route.get('controller').toLowerCase() + '/' + route.get('action').toLowerCase() + '.html').success(function(html) {
 				// We have the view
 				$('#PieContent-default').html(Handlebars.compile(html)(context));
-			})
+			});
 
 		} else {
 			// No route. 404
-
+			console.log("Missing Action");
+			//this.route('/errors/404');
+			return;
 		}
 
 		this.lastRoute = url;
