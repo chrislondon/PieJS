@@ -42,10 +42,13 @@ Pie.Model = Pie.Object.extend({
 			},
 			
 			success: function(resp) {
-				obj.set({
-					didSuccess: true,
-					data: self.parse(resp)
-				});
+				obj.set('didSuccess', true);
+
+				for (var i in resp) {
+					if (resp.hasOwnProperty(i)) {
+						obj.set('data.'+i, resp[i]);
+					}
+				}
 			}
 		};
 

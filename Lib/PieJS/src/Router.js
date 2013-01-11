@@ -63,6 +63,12 @@ Pie.Router = Pie.Object.extend({
 			route = Pie.Route.create(url);
 		}
 
+		if (route.get('controller') === undefined) {
+			console.log("Missing Controller");
+			this.route('/errors/404');
+			return;
+		}
+
 		controller = App.get('Controller.' + route.get('controller').decapitalize());
 
 		if (controller === undefined) {
@@ -70,7 +76,7 @@ Pie.Router = Pie.Object.extend({
 			if (App.get('Controller.' + route.get('controller')) === undefined) {
 				// We don't have this controller at all
 				console.log("Missing Controller");
-				//this.route('/errors/404');
+				this.route('/errors/404');
 				return;
 			}
 

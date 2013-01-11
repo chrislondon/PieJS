@@ -41,7 +41,7 @@ Pie.Object = {
 	},
 
 	set: function(key, val) {
-		var i = 0, metamorph, max, test;
+		var i = 0, metamorph, max, test, splitKey;
 
 		if (typeof key === 'object') {
 			for (i in key) {
@@ -53,22 +53,21 @@ Pie.Object = {
 			return;
 		}
 
-		key = key.split('.');
+		splitKey = key.split('.');
 
 		test = this;
 
-		for (max = key.length - 1; i < max; i++) {
-			if (test[key[i]] === undefined) {
-				return;
+		for (max = splitKey.length - 1; i < max; i++) {
+			if (test[splitKey[i]] === undefined) {
+				test[splitKey[i]] = {};
 			}
 
-			test = test[key[i]];
+			test = test[splitKey[i]];
 		}
 
-		test[key[i]] = val;
-
-		if (test._metamorphs !== undefined && test._metamorphs[key[i]] !== undefined) {
-			metamorph = test._metamorphs[key[i]];
+		test[splitKey[i]] = val;
+		if (this._metamorphs !== undefined && this._metamorphs[key] !== undefined) {
+			metamorph = this._metamorphs[key];
 			for (i in metamorph) {
 				if (metamorph.hasOwnProperty(i)) {
 					// TODO Maybe don't set HTML directly. Event trigger sounds like a good idea.
