@@ -1,10 +1,16 @@
 require('Lib/PieJS/src/Object.js');
+require('Lib/PieJS/src/Controller.js');
 
 var Pie = Pie || {};
 
 Pie.Application = Pie.Object.extend({
-	Controller: {},
 	Config: {},
+	Model: {},
+	Controller: {
+		Errors: Pie.Controller.extend({
+			404: function() {}
+		})
+	},
 	
 	options: {
 		appFolder: '/App',

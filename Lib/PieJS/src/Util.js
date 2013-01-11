@@ -4,3 +4,9 @@ if (String.prototype.capitalize === undefined) {
 	};
 }
 
+if (String.prototype.decapitalize === undefined) {
+	String.prototype.decapitalize = function() {
+		return this.charAt(0).toLowerCase() + this.slice(1);
+	};
+}
+

@@ -142,6 +142,16 @@ file('./webroot/js/handlebars.min.js', ['./webroot/js/handlebars.js'], function(
 	minify('./webroot/js/handlebars.js', './webroot/js/handlebars.min.js');
 });
 
+desc ('Make sure we have metamorph');
+file('./webroot/js/metamorph.js', ['./webroot/js'], function() {
+	concat('Lib/Metamorph/*.js', './webroot/js/metamorph.js', false);
+});
+
+desc ('Minify metamorph');
+file('./webroot/js/metamorph.min.js', ['./webroot/js/metamorph.js'], function() {
+	minify('./webroot/js/metamorph.js', './webroot/js/metamorph.min.js');
+});
+
 desc('Create unminified app.js');
 file('./webroot/js/app.js', ['./webroot/js'], function() {
 	concat(['App/*.js', 'App/**/*.js'], './webroot/js/app.js');
@@ -162,7 +172,9 @@ task('clean', [], function() {
 		'./webroot/js/app.js',
 		'./webroot/js/app.min.js',
 		'./webroot/js/handlebars.js',
-		'./webroot/js/handlebars.min.js'
+		'./webroot/js/handlebars.min.js',
+		'./webroot/js/metamorph.js',
+		'./webroot/js/metamorph.min.js'
 	];
 
 	for (i in filesList) {
@@ -181,7 +193,7 @@ task('clean', [], function() {
 });
 
 desc('Main build task');
-task('build', ['./webroot/js/pie.min.js', './webroot/js/app.min.js', 'build-views', './webroot/js/handlebars.min.js'], function() {
+task('build', ['./webroot/js/pie.min.js', './webroot/js/app.min.js', 'build-views', './webroot/js/handlebars.min.js', './webroot/js/metamorph.min.js'], function() {
 	console.log('Build complete');
 });
 task('rebuild', ['clean', 'build'], function() {
