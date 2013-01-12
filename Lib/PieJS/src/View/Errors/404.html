@@ -1,1 +1,90 @@
 <h1>Page Not Found</h1>
+
+<div class="panel nine columns">
+	<div class="row">
+	<div class="nine columns">
+		{{#if missingController}}
+			<h2>Missing Controller</h2>
+
+			<p>You attempted to call a controller that doesn't exist.</p>
+
+			<p>Make sure you create the following file:</p>
+
+			<pre>
+	/App/Controller/{ControllerName}.js
+
+</pre>
+
+			<p>Example:</p>
+
+			<pre>
+	App.Controller.{ControllerName} = Pie.Controller.extend({
+
+	});
+
+</pre>
+		{{/if}}
+		{{#if missingAction}}
+			<h2>Missing Action</h2>
+
+			<p>You attempted to call an action that doesn't exist.</p>
+
+			<p>Add an action in the following file:</p>
+
+			<pre>
+	/App/Controller/{ControllerName}.js
+
+</pre>
+			<p>Example:</p>
+
+			<pre>
+	App.Controller.{ControllerName} = Pie.Controller.extend({
+		{ActionName}: function() {
+			// Action todo items here
+		}
+	});
+
+</pre>
+
+		{{/if}}
+		{{#if missingView}}
+			<h2>Missing View</h2>
+
+			<p>You attempted to call an view that doesn't exist.</p>
+
+			<p>Make sure you create the view file here:</p>
+
+			<pre>
+	/App/View/{ControllerName}/{actionName}.html
+
+</pre>
+
+		{{/if}}
+		{{#if missingRoute}}
+			<h2>Missing Route</h2>
+
+			<p>
+				Unable to determine a controller from the route. This usually means
+				you landed on the root route <code>/</code> but haven't configured
+				it.
+			</p>
+
+			<p>Please set the root route in the config file:</p>
+
+			<pre>
+	/App/Config/Routes.js
+
+</pre>
+
+			<p>Example:</p>
+
+			<pre>
+	App.Config.Routes = [
+		{url: '/', controller: '{ControllerName}'}
+	];
+
+</pre>
+		{{/if}}
+	</div>
+	</div>	
+</div>

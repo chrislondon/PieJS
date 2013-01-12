@@ -9,7 +9,7 @@ Pie.Model = Pie.Object.extend({
 	},
 
 	_ajax: function(data, type) {
-		var obj, self, options, configUrl = App.get('Config.Models.url');
+		var obj, self = this, options, configUrl = App.get('Config.Models.url');
 
 		obj = Pie.ModelObject.create();
 
@@ -20,8 +20,6 @@ Pie.Model = Pie.Object.extend({
 		if (configUrl === undefined) {
 			configUrl = '';
 		}
-
-		self = this;
 
 		options = {
 			data: data,
@@ -42,13 +40,10 @@ Pie.Model = Pie.Object.extend({
 			},
 			
 			success: function(resp) {
-				obj.set('didSuccess', true);
-
-				for (var i in resp) {
-					if (resp.hasOwnProperty(i)) {
-						obj.set('data.'+i, resp[i]);
-					}
-				}
+				obj.set({
+					didSuccess: true,
+					data: self.parse(resp)
+				});
 			}
 		};
 

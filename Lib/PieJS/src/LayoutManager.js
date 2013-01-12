@@ -22,10 +22,10 @@ Pie.LayoutManager = Pie.Object.extend({
 			// We don't have the view something went horribly wrong
 			console.log("Couldn't find view");
 
-			if (layout !== 'missing-view') {
+			if (layout !== 'missing-layout') {
 				// load the missing view warning unless we failed loading the
 				// missing view warning
-				self.loadLayout('missing-view', target, context);
+				self.loadLayout('missing-layout', target, context);
 			}
 		});
 	},

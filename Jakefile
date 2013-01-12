@@ -124,7 +124,7 @@ task('build-views', ['./webroot/views'], function() {
 
 desc('Create unminified pie.js');
 file('./webroot/js/pie.js', ['./webroot/js'], function() {
-	concat('Lib/PieJS/src/*.js', './webroot/js/pie.js');
+	concat(['Lib/PieJS/src/*.js', 'Lib/PieJS/src/**/*.js'], './webroot/js/pie.js');
 });
 
 desc ('This is the minify task');

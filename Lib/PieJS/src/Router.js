@@ -19,17 +19,17 @@ Pie.Router = Pie.Object.extend({
 			}
 		}
 
-
+		// Handle url changes
 		if (window.onhashchange !== undefined && !($.browser.msie)) {
 			window.onhashchange = function () {
 				self.hashChange();
 			};
 		} else {
-			// IE workaround. Poll the hash every 1/10th second
-			// TODO is this too much/often?
+			// IE workaround. Poll the hash every half second
+			// TODO is this too little/slow/much/often?
 			window.setInterval(function () {
 				self.hashChange();
-			}, 100);
+			}, 500);
 		}
 
 		return self;
@@ -64,11 +64,11 @@ Pie.Router = Pie.Object.extend({
 		}
 
 		if (route.get('controller') === undefined) {
-			console.log("Missing Controller");
-			this.route('/errors/404');
+			console.log("Missing Route");
+			this.route('/errors/404/missingRoute');
 			return;
 		}
-
+console.log(route.get('controller'));
 		controller = App.get('Controller.' + route.get('controller').decapitalize());
 
 		if (controller === undefined) {
@@ -76,7 +76,7 @@ Pie.Router = Pie.Object.extend({
 			if (App.get('Controller.' + route.get('controller')) === undefined) {
 				// We don't have this controller at all
 				console.log("Missing Controller");
-				this.route('/errors/404');
+				this.route('/errors/404/missingController');
 				return;
 			}
 
@@ -96,7 +96,7 @@ Pie.Router = Pie.Object.extend({
 		} else {
 			// No route. 404
 			console.log("Missing Action");
-			//this.route('/errors/404');
+			this.route('/errors/404/missingAction');
 			return;
 		}
 
