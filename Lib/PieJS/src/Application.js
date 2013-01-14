@@ -40,10 +40,15 @@ Pie.Application = Pie.Object.extend({
 			404: function(error) {
 				var obj = {};
 				obj[error] = true;
-
-				console.log('here', obj);
+				
 				return obj;
 			}
+		}),
+		Pages: Pie.Controller.extend({
+			index: function() {
+				
+			}
+			
 		})
 	},
 

@@ -68,7 +68,7 @@ Pie.Router = Pie.Object.extend({
 			this.route('/errors/404/missingRoute');
 			return;
 		}
-console.log(route.get('controller'));
+
 		controller = App.get('Controller.' + route.get('controller').decapitalize());
 
 		if (controller === undefined) {
@@ -90,7 +90,7 @@ console.log(route.get('controller'));
 
 			$.get('/views/' + route.get('controller').toLowerCase() + '/' + route.get('action').toLowerCase() + '.html').success(function(html) {
 				// We have the view
-				$('#PieContent-default').html(Handlebars.compile(html)(context));
+				App.layoutManager.insertView('default', Handlebars.compile(html)(context));
 			});
 
 		} else {

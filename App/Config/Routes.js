@@ -12,5 +12,6 @@
  *
  */
 App.Config.Routes = [
-	//{url: '/', controller: 'Example'}
+	{url: '/', controller: 'Pages'},
+	{url: '/pages', controller: 'Pages'}
 ];

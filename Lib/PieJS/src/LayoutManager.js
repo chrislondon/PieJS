@@ -2,6 +2,7 @@ var Pie = Pie || {};
 
 Pie.LayoutManager = Pie.Object.extend({
 	layouts: {},
+	pendingViews: {},
 
 	init: function() {
 		this.loadLayout('default');
@@ -33,6 +34,25 @@ Pie.LayoutManager = Pie.Object.extend({
 	compileLayout: function(html, layout, target, context) {
 		this.set('layouts.' + layout, Handlebars.compile(html));
 		this.renderLayout(layout, target, context);
+
+		// check if we have any pending views for this layout
+		if (this.get('pendingViews.' + target) !== undefined) {
+			this.renderView(target, this.get('pendingViews.' + target));
+		}
+	},
+
+	insertView: function(target, html) {
+		// todo check if we have the layout
+		if (this.get('layouts.' + target) === undefined) {
+			// if not then put it in pending views
+			this.set('pendingViews.' + target, html);
+		} else {
+			this.renderView(target, html);
+		}
+	},
+
+	renderView: function(target, html) {
+		$('#PieContent-' + target).html(html);
 	},
 
 	renderLayout: function(layout, target, context) {
