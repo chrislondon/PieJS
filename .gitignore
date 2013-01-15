@@ -1,2 +1,2 @@
-/webroot/views
-/webroot/js/*.js
+webroot/views/*/*.html
+webroot/js/*.js
