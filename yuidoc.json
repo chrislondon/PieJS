@@ -1,0 +1,10 @@
+{
+    "name": "PieJS - Apple Pie",
+    "description": "Rapid development javascript framework",
+    "version": "0.0.1",
+    "url": "https://github.com/chrislondon/PieJS",
+    "options": {
+		"paths": ["lib", "app"],
+        "outdir": "docs"
+    }
+}

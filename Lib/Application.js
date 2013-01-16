@@ -1,5 +1,5 @@
-require('Lib/PieJS/src/Object.js');
-require('Lib/PieJS/src/Controller/Controller.js');
+require('lib/Object.js');
+require('lib/Controller/Controller.js');
 
 var Pie = Pie || {};
 

@@ -92,13 +92,13 @@ task('build-views', ['./webroot/views'], function() {
 	var list, i, filename, filedir, targetDir, loaded = {};
 
 	list = new jake.FileList();
-	list.include('App/View/**/*.html');
-	list.include('Lib/PieJS/src/View/**/*.html');
+	list.include('app/View/**/*.html');
+	list.include('lib/View/**/*.html');
 	list = list.toArray();
 
 	for (i in list) {
 		if (list.hasOwnProperty(i)) {
-			filename = (list[i].substr(0, 3) === 'App' ? list[i].substr(9) : list[i].substr(19)).toLowerCase();
+			filename = (list[i].substr(0, 3) === 'app' ? list[i].substr(9) : list[i].substr(19)).toLowerCase();
 
 			if (loaded[filename] !== undefined) {
 				continue;
@@ -124,7 +124,7 @@ task('build-views', ['./webroot/views'], function() {
 
 desc('Create unminified pie.js');
 file('./webroot/js/pie.js', ['./webroot/js'], function() {
-	concat(['Lib/PieJS/src/*.js', 'Lib/PieJS/src/**/*.js'], './webroot/js/pie.js');
+	concat(['lib/*.js', 'lib/**/*.js'], './webroot/js/pie.js');
 });
 
 desc ('This is the minify task');
@@ -134,7 +134,7 @@ file('./webroot/js/pie.min.js', ['./webroot/js/pie.js'], function() {
 
 desc ('Make sure we have handlebars');
 file('./webroot/js/handlebars.js', ['./webroot/js'], function() {
-	concat('Lib/Handlebars/*.js', './webroot/js/handlebars.js', false);
+	concat('vendors/handlebars*.js', './webroot/js/handlebars.js', false);
 });
 
 desc ('Minify handlebars');
@@ -144,7 +144,7 @@ file('./webroot/js/handlebars.min.js', ['./webroot/js/handlebars.js'], function(
 
 desc ('Make sure we have metamorph');
 file('./webroot/js/metamorph.js', ['./webroot/js'], function() {
-	concat('Lib/Metamorph/*.js', './webroot/js/metamorph.js', false);
+	concat('vendors/metamorph.js', './webroot/js/metamorph.js', false);
 });
 
 desc ('Minify metamorph');
@@ -154,7 +154,7 @@ file('./webroot/js/metamorph.min.js', ['./webroot/js/metamorph.js'], function() 
 
 desc('Create unminified app.js');
 file('./webroot/js/app.js', ['./webroot/js'], function() {
-	concat(['App/*.js', 'App/**/*.js'], './webroot/js/app.js');
+	concat(['app/*.js', 'app/**/*.js'], './webroot/js/app.js');
 });
 
 desc ('This is the minify task');
@@ -199,3 +199,4 @@ task('build', ['./webroot/js/pie.min.js', './webroot/js/app.min.js', 'build-view
 task('rebuild', ['clean', 'build'], function() {
 	console.log('Rebuild complete');
 });
+task('default', ['rebuild'], function() {});

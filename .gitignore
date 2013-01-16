@@ -1,2 +1,3 @@
 webroot/views/*/*.html
 webroot/js/*.js
+docs

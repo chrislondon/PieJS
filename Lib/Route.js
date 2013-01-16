@@ -1,4 +1,4 @@
-require('Lib/PieJS/src/DataObject.js');
+require('lib/DataObject.js');
 
 var Pie = Pie || {};
 
