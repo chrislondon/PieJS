@@ -13,6 +13,7 @@
 		<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script>
 		<script src="/js/handlebars.js"></script>
 		<script src="/js/metamorph.js"></script>
+		<script src="/js/lawnchair.js"></script>
 
 		<!-- PieJS -->
 		<script src="/js/pie.js"></script>
@@ -30,7 +31,9 @@
 	</head>
 	<body>
 		<script>
-			App.init();
+			window.onload = function() {
+				App.init();
+			}
 		</script>
 
 		<noscript>
